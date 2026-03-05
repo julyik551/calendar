@@ -13,7 +13,7 @@
         margin-bottom: 30px;
     }
     #month {
-        font-size: 40px;
+        font-size: 20px;
         font-weight: bold;
     }
     #container2 {
@@ -26,14 +26,14 @@
         padding: 10px;
         width: 100px;
         text-align: center;
-        font-size: 30px;
     }
     .day {
+        font-size: 30px;
         font-weight: bold;
     }
     .result {
         height: 100px;
-        font-size: 50px;
+        font-size: 40px;
         align-items: center;
         display: flex;
         justify-content: center;
@@ -60,44 +60,64 @@
         const result1 = document.getElementById("result1");
         const result2 = document.getElementById("result2");
         const month = document.getElementById("month");
-        const result = [null, null];
+        let today = null;
+        let tomorrow = null;
 
         const d = new Date();
-        const this_month = d.getMonth();
-        const array = array_2026[this_month];
-        let array2 = null;
-        if (this_month + 1 < array_2026.length){
-            array2 = array_2026[this_month + 1];
-        }
-
         const this_day = d.getDate();
-        result[0] = array[this_day - 1];
-        if (this_day < array.length){
-            result[1] = array[this_day];
-        } else if (array2 !== null){
-            result[1] = array2[0];
+        const e = new Date();
+        e.setDate(this_day + 1);
+        const next_day = e.getDate();
+
+        const this_month = d.getMonth();
+        const next_month = e.getMonth();
+
+        const array = array_2026[this_month];
+        today = array[this_day - 1];
+
+        if (this_month == next_month){
+            if (this_day < array.length){
+                tomorrow = array[this_day];
+            }
+        }
+        else {
+            if (next_month < array_2026.length){
+                const array2 = array_2026[next_month]; // skip?
+                tomorrow = array2[0];
+            }
         }
         
+        
         document.getElementById("day1").innerText = `${this_day}`;
-        document.getElementById("day2").innerText = `${this_day + 1}`; //check next month
+        document.getElementById("day2").innerText = `${next_day}`;
 
-        if (result[0] === null){
+        const map1 = {a: ["正常", ""], d: ["中班", ""], g: ["全日", "red"], r: ["放假", "orange"]};
+        
+        if (today === null){
             result1.innerText = "No data";
         }
         else {
-            result1.innerText = `${result[0].toUpperCase()}`;
+            const info = map1[today];
+            result1.innerText = `${info[0]}`;
+            result1.style.color = info[1] === "" ? "black" : info[1];
         }
 
-        if (result[1] === null){
+        if (tomorrow === null){
             result2.innerText = "No data";
         }
         else {
-            result2.innerText = `${result[1].toUpperCase()}`;
+            const info = map1[tomorrow];
+            result2.innerText = `${info[0]}`;
+            result2.style.color = info[1] === "" ? "black" : info[1];
         }
 
-        month.innerText = `${this_month + 1}月`;
+        const months = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"];
+        if (this_month === next_month){
+            month.innerText = `${months[this_month]}月`;
+        } else {
+            month.innerText = `${months[this_month]}月 / ${months[next_month]}月`;
+        }
         
     </script>
 </body>
-
 </html>
